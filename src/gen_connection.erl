@@ -329,7 +329,7 @@ connect(Info) ->
     {next_event, internal, {connect, Info}}.
 
 disconnect(Info) ->
-    {next_event, internval, {disconnect, Info}}.
+    {next_event, internal, {disconnect, Info}}.
 
 timeout(Timeout, #data{mod=Mod}) ->
     {timeout, Timeout, Mod}.
