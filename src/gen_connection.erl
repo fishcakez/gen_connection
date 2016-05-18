@@ -274,8 +274,8 @@ handle_call({reply, Reply, State}, From, Data) ->
     {next_state, State, Data, do_reply(From, Reply)};
 handle_call({reply, Reply, State, hibernate}, From, Data) ->
     {next_state, State, Data, [do_reply(From, Reply), hibernate]};
-handle_call({reply, Reply, State, Timeout}, From, #data{mod=Mod} = Data) ->
-    {next_state, State, Data, [do_reply(From, Reply), timeout(Mod, Timeout)]};
+handle_call({reply, Reply, State, Timeout}, From, Data) ->
+    {next_state, State, Data, [do_reply(From, Reply), timeout(Timeout, Data)};
 handle_call({stop, Reason, Reply, State}, From, Data) ->
     {stop_and_reply, Reason, [do_reply(From, Reply)], {stop, State, Data}};
 handle_call(Other, _, Data) ->
