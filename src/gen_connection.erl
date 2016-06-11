@@ -77,7 +77,6 @@
 -callback handle_cast(Req :: term(), State :: term()) ->
     {noreply, NState :: term()} |
     {noreply, NState :: term(), timeout() | hibernate} |
-    {disconnect | connect, Info :: term(), Reply :: term(), NState :: term()} |
     {disconnect | connect, Info :: term(), NState :: term()} |
     {stop, Reason :: term(), Reply :: term(), NState :: term()} |
     {stop, Reason :: term(), NState :: term()}.
@@ -85,7 +84,6 @@
 -callback handle_info(Req :: term(), State :: term()) ->
     {noreply, NState :: term()} |
     {noreply, NState :: term(), timeout() | hibernate} |
-    {disconnect | connect, Info :: term(), Reply :: term(), NState :: term()} |
     {disconnect | connect, Info :: term(), NState :: term()} |
     {stop, Reason :: term(), Reply :: term(), NState :: term()} |
     {stop, Reason :: term(), NState :: term()}.
@@ -99,7 +97,7 @@
 
 -callback terminate(Reason :: term(), State :: term()) -> term().
 
--optional_callback([format_status/2]).
+-optional_callbacks([format_status/2]).
 
 -record(data, {mod :: module(),
                backoff :: reference() | undefined}).
@@ -275,7 +273,11 @@ handle_call({reply, Reply, State}, From, Data) ->
 handle_call({reply, Reply, State, hibernate}, From, Data) ->
     {next_state, State, Data, [do_reply(From, Reply), hibernate]};
 handle_call({reply, Reply, State, Timeout}, From, Data) ->
-    {next_state, State, Data, [do_reply(From, Reply), timeout(Timeout, Data)};
+    {next_state, State, Data, [do_reply(From, Reply), timeout(Timeout, Data)]};
+handle_call({connect, Info, Reply, State}, From, Data) ->
+    {next_state, State, Data, [do_reply(From, Reply), connect(Info)]};
+handle_call({disconnect, Info, Reply, State}, From, Data) ->
+    {next_state, State, Data, [do_reply(From, Reply), disconnect(Info)]};
 handle_call({stop, Reason, Reply, State}, From, Data) ->
     {stop_and_reply, Reason, [do_reply(From, Reply)], {stop, State, Data}};
 handle_call(Other, _, Data) ->
@@ -305,6 +307,8 @@ handle_connect({ok, State, Timeout}, Data) ->
 handle_connect(Other, Data) ->
     handle_special(Other, Data).
 
+handle_disconnect({connect, Info, State}, Data) ->
+    {next_state, State, Data, connect(Info)};
 handle_disconnect({noconnect, State}, Data) ->
     {next_state, State, Data};
 handle_disconnect({noconnect, State, hibernate}, Data) ->
