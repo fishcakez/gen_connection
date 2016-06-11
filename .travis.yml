@@ -1,0 +1,5 @@
+language: erlang
+sudo: false
+otp_release:
+    - 18.3
+script: "kerl list installations"
