@@ -99,7 +99,7 @@
 
 -callback terminate(Reason :: term(), State :: term()) -> term().
 
--optional_callback([format_status/2]).
+-optional_callbacks([format_status/2]).
 
 -record(data, {mod :: module(),
                backoff :: reference() | undefined}).
