@@ -276,6 +276,10 @@ handle_call({reply, Reply, State, hibernate}, From, Data) ->
     {next_state, State, Data, [do_reply(From, Reply), hibernate]};
 handle_call({reply, Reply, State, Timeout}, From, Data) ->
     {next_state, State, Data, [do_reply(From, Reply), timeout(Timeout, Data)]};
+handle_call({connect, Info, Reply, State}, From, Data) ->
+    {next_state, State, Data, [do_reply(From, Reply), connect(Info)]};
+handle_call({disconnect, Info, Reply, State}, From, Data) ->
+    {next_state, State, Data, [do_reply(From, Reply), disconnect(Info)]};
 handle_call({stop, Reason, Reply, State}, From, Data) ->
     {stop_and_reply, Reason, [do_reply(From, Reply)], {stop, State, Data}};
 handle_call(Other, _, Data) ->
@@ -305,6 +309,8 @@ handle_connect({ok, State, Timeout}, Data) ->
 handle_connect(Other, Data) ->
     handle_special(Other, Data).
 
+handle_disconnect({connect, Info, State}, Data) ->
+    {next_state, State, Data, connect(Info)};
 handle_disconnect({noconnect, State}, Data) ->
     {next_state, State, Data};
 handle_disconnect({noconnect, State, hibernate}, Data) ->
