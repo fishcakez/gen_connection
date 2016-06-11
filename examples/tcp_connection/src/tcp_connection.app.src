@@ -1,0 +1,11 @@
+{application, tcp_connection, [
+    {description, "Example TCP connection library using gen_connection"},
+    {vsn, "1.0.0"},
+    {applications, [
+        kernel,
+        stdlib,
+        gen_connection
+    ]},
+    {modules, []},
+    {env, []}
+]}.
