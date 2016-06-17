@@ -28,7 +28,8 @@
          call/2,
          call/3,
          cast/2,
-         reply/2]).
+         reply/2,
+         stop/1]).
 
 %% gen_statem callbacks
 
@@ -146,6 +147,11 @@ cast(Conn, Request) ->
       Response :: term().
 reply(From, Response) ->
     gen_statem:reply(From, Response).
+
+-spec stop(Conn) -> ok when
+      Conn :: connection().
+stop(Conn) ->
+    gen_statem:stop(Conn).
 
 %% @private
 init({Mod, Args}) ->
