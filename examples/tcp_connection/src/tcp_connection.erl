@@ -61,13 +61,15 @@ disconnect(Info, #state{socket = Socket} = State) ->
     _ = gen_tcp:close(Socket),
     case Info of
         {close, From} ->
-            gen_connection:reply(From, ok);
+            gen_connection:reply(From, ok),
+            {noconnect, State#state{socket = undefined}};
         {error, closed} ->
-            error_logger:error_msg("Connection closed~n");
+            error_logger:error_msg("Connection closed~n"),
+            {connect, reconnect, State#state{socket = undefined}};
         {error, Reason} ->
-            error_logger:error_msg("Connection error: ~s~n", [inet:format_error(Reason)])
-    end,
-    {connect, reconnect, State#state{socket = undefined}}.
+            error_logger:error_msg("Connection error: ~s~n", [inet:format_error(Reason)]),
+            {connect, reconnect, State#state{socket = undefined}}
+    end.
 
 %% @hidden
 handle_call(_, _, #state{socket = undefined} = Socket) ->
