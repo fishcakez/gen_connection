@@ -78,14 +78,12 @@
     {noreply, NState :: term()} |
     {noreply, NState :: term(), timeout() | hibernate} |
     {disconnect | connect, Info :: term(), NState :: term()} |
-    {stop, Reason :: term(), Reply :: term(), NState :: term()} |
     {stop, Reason :: term(), NState :: term()}.
 
 -callback handle_info(Req :: term(), State :: term()) ->
     {noreply, NState :: term()} |
     {noreply, NState :: term(), timeout() | hibernate} |
     {disconnect | connect, Info :: term(), NState :: term()} |
-    {stop, Reason :: term(), Reply :: term(), NState :: term()} |
     {stop, Reason :: term(), NState :: term()}.
 
 -callback code_change(OldVsn :: term(), State :: term(), Extra :: term()) ->
